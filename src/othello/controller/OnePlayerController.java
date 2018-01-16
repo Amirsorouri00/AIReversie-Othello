@@ -36,7 +36,7 @@ public class OnePlayerController extends Controller {
 	public void newGame() {
 		active = true;
 		b = new Board(BoardGUI.ROWS);
-		r = new RandomAI();
+		r = new MyPlayerAI();
 		update();
 		l.setMessage("New game");
 	}

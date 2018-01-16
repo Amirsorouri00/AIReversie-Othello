@@ -1,11 +1,27 @@
 package othello.ai;
 
-import java.awt.Point;
+import java.awt.*;
+import java.util.List;
+import java.util.Vector;
 
 import othello.model.Board;
 
 // your AI here. currently will choose first possible move
 public class MyPlayerAI extends ReversiAI {
+
+    public List generateMoves(Board state) {
+        List <Point> pointList= new Vector<>();
+
+        for (int j = 0; j < size; j++) {
+            for (int i = 0; i < size; i++) {
+                Board tempState = new Board(state);
+                if (tempState.move(i, j))
+                    pointList.add(new Point(i,j));
+            }
+        }
+        return pointList;
+    }
+
     public OthelloMove getMove(OthelloState state) {
         //
         // Time the search
@@ -23,69 +39,73 @@ public class MyPlayerAI extends ReversiAI {
         return moveToMake;
     }
 
-    public OthelloMove minimax(OthelloState state, int depth) {
-        //check if depth reached or end of game
-        if (depth <= 0 || state.gameOver()) {
-            return null;
-        } else {
-            //for tracking best score from Min-Value
-            //use negative infinite since we want the maximum minValue
-            double currentScore = Integer.MIN_VALUE;
 
-            //to get the move that had the best score
-            OthelloMove currentMove = null;
+//
+//    public Point minimax(Board state, int depth) {
+//        //check if depth reached or end of game
+//        if (depth <= 0 || state.gameOver()) {
+//            return null;
+//        } else {
+//            //for tracking best score from Min-Value
+//            //use negative infinite since we want the maximum minValue
+//            double currentScore = Integer.MIN_VALUE;
+//
+//            //to get the move that had the best score
+//            Point currentMove = null;
+//            List<Point> i = state.generateMoves();
+//            //generate all moves of current state
+//            List moves = generateMoves();
+//            for (Point move : moves) {
+//                Point newState = state.applyMoveCloning(move); //apply move into clone
+//                double moveScore = minValue(newState, depth); //hold the move's minValue score
+//                if (moveScore > currentScore) { //always use the highest minValue
+//                    currentScore = moveScore;
+//                    currentMove = move;
+//                }
+//            }
+//            return currentMove;
+//        }
+//    }
 
-            //generate all moves of current state
-            List<OthelloMove> moves = state.generateMoves();
-            for (OthelloMove move : moves) {
-                OthelloState newState = state.applyMoveCloning(move); //apply move into clone
-                double moveScore = minValue(newState, depth); //hold the move's minValue score
-                if (moveScore > currentScore) { //always use the highest minValue
-                    currentScore = moveScore;
-                    currentMove = move;
-                }
-            }
-            return currentMove;
-        }
-    }
+
 
     // return utility value of Max (this player)
-    public double maxValue(OthelloState state, int depth) {
-        //check if depth reached or end of game
-        if (depth <= 0 || state.gameOver()) {
-            return state.evaluation();
-        } else {
-            double bestScore = Integer.MIN_VALUE; //keep track of best score for Max. Start at negative infinite
-            List<OthelloMove> moves = state.generateMoves(); //generate possible moves for this state
-            for (OthelloMove move : moves) {
-                OthelloState moveState = state.applyMoveCloning(move); //apply move into state clone
-                if (minValue(moveState, depth - 1) > bestScore) { //get the maximum value
-                    bestScore = minValue(moveState, depth - 1);
-                }
-            }
-            return bestScore;
-        }
-    }
-
-
-    //return utility value of Min (opponent)
-    public double minValue(OthelloState state, int depth) {
-        //check if depth reached or end of game
-        if (depth <= 0 || state.gameOver()) {
-            return state.evaluation();
-        } else {
-            double bestScore = Integer.MAX_VALUE; //keep track of best score for Min. Start at positive infinite
-            List<OthelloMove> moves = state.generateMoves(); //generate possible moves for this state
-            for (OthelloMove move : moves) {
-                OthelloState moveState = state.applyMoveCloning(move); //apply move into state clone
-                if (maxValue(moveState, depth - 1) < bestScore) { //get the minimum value
-                    bestScore = maxValue(moveState, depth - 1);
-                }
-            }
-            return bestScore;
-        }
-    }
-
+//    public double maxValue(OthelloState state, int depth) {
+//        //check if depth reached or end of game
+//        if (depth <= 0 || state.gameOver()) {
+//            return state.evaluation();
+//        } else {
+//            double bestScore = Integer.MIN_VALUE; //keep track of best score for Max. Start at negative infinite
+//            List<OthelloMove> moves = state.generateMoves(); //generate possible moves for this state
+//            for (OthelloMove move : moves) {
+//                OthelloState moveState = state.applyMoveCloning(move); //apply move into state clone
+//                if (minValue(moveState, depth - 1) > bestScore) { //get the maximum value
+//                    bestScore = minValue(moveState, depth - 1);
+//                }
+//            }
+//            return bestScore;
+//        }
+//    }
+//
+//
+//    //return utility value of Min (opponent)
+//    public double minValue(OthelloState state, int depth) {
+//        //check if depth reached or end of game
+//        if (depth <= 0 || state.gameOver()) {
+//            return state.evaluation();
+//        } else {
+//            double bestScore = Integer.MAX_VALUE; //keep track of best score for Min. Start at positive infinite
+//            List<OthelloMove> moves = state.generateMoves(); //generate possible moves for this state
+//            for (OthelloMove move : moves) {
+//                OthelloState moveState = state.applyMoveCloning(move); //apply move into state clone
+//                if (maxValue(moveState, depth - 1) < bestScore) { //get the minimum value
+//                    bestScore = maxValue(moveState, depth - 1);
+//                }
+//            }
+//            return bestScore;
+//        }
+//    }
+//
 
     @Override
     public Point nextMove(Board b) {
