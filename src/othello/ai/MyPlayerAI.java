@@ -10,13 +10,13 @@ import othello.model.Board;
 public class MyPlayerAI extends ReversiAI {
 
     public List generateMoves(Board state) {
-        List <Point> pointList= new Vector<>();
+        List<Point> pointList = new Vector<>();
 
         for (int j = 0; j < size; j++) {
             for (int i = 0; i < size; i++) {
                 Board tempState = new Board(state);
                 if (tempState.move(i, j))
-                    pointList.add(new Point(i,j));
+                    pointList.add(new Point(i, j));
             }
         }
         return pointList;
@@ -40,33 +40,33 @@ public class MyPlayerAI extends ReversiAI {
     }
 
 
-//
-//    public Point minimax(Board state, int depth) {
-//        //check if depth reached or end of game
-//        if (depth <= 0 || state.gameOver()) {
-//            return null;
-//        } else {
-//            //for tracking best score from Min-Value
-//            //use negative infinite since we want the maximum minValue
-//            double currentScore = Integer.MIN_VALUE;
-//
-//            //to get the move that had the best score
-//            Point currentMove = null;
-//            List<Point> i = state.generateMoves();
-//            //generate all moves of current state
-//            List moves = generateMoves();
-//            for (Point move : moves) {
-//                Point newState = state.applyMoveCloning(move); //apply move into clone
-//                double moveScore = minValue(newState, depth); //hold the move's minValue score
-//                if (moveScore > currentScore) { //always use the highest minValue
-//                    currentScore = moveScore;
-//                    currentMove = move;
-//                }
-//            }
-//            return currentMove;
-//        }
-//    }
+    public Point minimax(Board state, int depth) {
+        //check if depth reached or end of game
+        if (depth <= 0 || state.gameOver()) {
+            return null;
+        } else {
+            //for tracking best score from Min-Value
+            //use negative infinite since we want the maximum minValue
+            double currentScore = Integer.MIN_VALUE;
 
+            //to get the move that had the best score
+            Point currentMove = null;
+            List<Point> moves = generateMoves(state);
+            //generate all moves of current state
+
+            for (Point move : moves) {
+                Board tempBoard = new Board(state);
+                tempBoard.move(move.x, move.y); //apply move into clone
+                // Point newState = state.applyMoveCloning(move); //apply move into clone
+                double moveScore = minValue(tempBoard, depth); //hold the move's minValue score
+                if (moveScore > currentScore) { //always use the highest minValue
+                    currentScore = moveScore;
+                    currentMove = move;
+                }
+            }
+            return currentMove;
+        }
+    }
 
 
     // return utility value of Max (this player)
