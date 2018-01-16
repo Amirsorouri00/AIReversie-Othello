@@ -6,14 +6,94 @@ import othello.model.Board;
 
 // your AI here. currently will choose first possible move
 public class MyPlayerAI extends ReversiAI {
+    public OthelloMove getMove(OthelloState state) {
+        //
+        // Time the search
+        //
+        OthelloMove moveToMake = null; //used to let timer be reachable
+        long startTime = System.nanoTime();
 
-	@Override
-	public Point nextMove(Board b) {
-		for (int j = 0; j < size; j++)
-			for (int i = 0; i < size; i++)
-				if (b.move(i, j))
-					return new Point(i, j);
-		return null;
+        //call minimax search to get the move to make
+        moveToMake = minimax(state, this.depth);
+
+        long endTime = System.nanoTime();
+        long duration = ((endTime - startTime) / 1000000);
+        System.out.println("Minimax took " + duration + " milliseconds.");
+
+        return moveToMake;
+    }
+
+    public OthelloMove minimax(OthelloState state, int depth) {
+        //check if depth reached or end of game
+        if (depth <= 0 || state.gameOver()) {
+            return null;
+        } else {
+            //for tracking best score from Min-Value
+            //use negative infinite since we want the maximum minValue
+            double currentScore = Integer.MIN_VALUE;
+
+            //to get the move that had the best score
+            OthelloMove currentMove = null;
+
+            //generate all moves of current state
+            List<OthelloMove> moves = state.generateMoves();
+            for (OthelloMove move : moves) {
+                OthelloState newState = state.applyMoveCloning(move); //apply move into clone
+                double moveScore = minValue(newState, depth); //hold the move's minValue score
+                if (moveScore > currentScore) { //always use the highest minValue
+                    currentScore = moveScore;
+                    currentMove = move;
+                }
+            }
+            return currentMove;
+        }
+    }
+
+    // return utility value of Max (this player)
+    public double maxValue(OthelloState state, int depth) {
+        //check if depth reached or end of game
+        if (depth <= 0 || state.gameOver()) {
+            return state.evaluation();
+        } else {
+            double bestScore = Integer.MIN_VALUE; //keep track of best score for Max. Start at negative infinite
+            List<OthelloMove> moves = state.generateMoves(); //generate possible moves for this state
+            for (OthelloMove move : moves) {
+                OthelloState moveState = state.applyMoveCloning(move); //apply move into state clone
+                if (minValue(moveState, depth - 1) > bestScore) { //get the maximum value
+                    bestScore = minValue(moveState, depth - 1);
+                }
+            }
+            return bestScore;
+        }
+    }
+
+
+    //return utility value of Min (opponent)
+    public double minValue(OthelloState state, int depth) {
+        //check if depth reached or end of game
+        if (depth <= 0 || state.gameOver()) {
+            return state.evaluation();
+        } else {
+            double bestScore = Integer.MAX_VALUE; //keep track of best score for Min. Start at positive infinite
+            List<OthelloMove> moves = state.generateMoves(); //generate possible moves for this state
+            for (OthelloMove move : moves) {
+                OthelloState moveState = state.applyMoveCloning(move); //apply move into state clone
+                if (maxValue(moveState, depth - 1) < bestScore) { //get the minimum value
+                    bestScore = maxValue(moveState, depth - 1);
+                }
+            }
+            return bestScore;
+        }
+    }
+
+
+    @Override
+    public Point nextMove(Board b) {
+        for (int j = 0; j < size; j++)
+            for (int i = 0; i < size; i++)
+                if (b.move(i, j))
+                    return new Point(i, j);
+        return null;
 
 		/*{
 			b.isCapturedByMe(x, y);					// square (x, y) is mine
@@ -32,11 +112,11 @@ public class MyPlayerAI extends ReversiAI {
 			b.getTotal(false);						//number of cells captured by my opponent
 			this.size;								//board size (always 8)
 		}*/
-	}
+    }
 
-	@Override
-	public String getName() {
-		//IMPORTANT: your student number here
-		return new String("9300000");
-	}
+    @Override
+    public String getName() {
+        //IMPORTANT: your student number here
+        return new String("9300000");
+    }
 }
