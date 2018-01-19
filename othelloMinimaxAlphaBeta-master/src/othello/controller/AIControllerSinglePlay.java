@@ -56,6 +56,7 @@ public class AIControllerSinglePlay extends Controller {
 			//Player Black turn
 			if (b.canMove()){
 				Point AImove = aiBlack.nextMove(new Board(b));
+				//b.print();
 				if(!b.move(AImove.x, AImove.y)){
 					playerLog("Player black's illegal move: Player white wins.");
 					update();

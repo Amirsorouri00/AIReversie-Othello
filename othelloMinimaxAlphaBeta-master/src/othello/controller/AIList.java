@@ -1,14 +1,12 @@
 package othello.controller;
 
-import othello.ai.GreedyAI;
-import othello.ai.MyPlayerAI;
-import othello.ai.RandomAI;
-import othello.ai.ReversiAI;
+import othello.ai.*;
 
 public class AIList {
 	public static final ReversiAI AI[] = {
 		new GreedyAI(),
 		new MyPlayerAI(),
+		new OtherPlayer(),
 		new RandomAI(),
 		};
 	public static String[] getAINameList(){
